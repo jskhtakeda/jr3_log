@@ -15,6 +15,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 
 #include <stdexcept>
@@ -77,7 +78,7 @@ void handler(int signum) {
   flag = true;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
   try {
     IJR3Q* ptest_dev = JR3QFactory::create( JR3Q_TYPE_AUTO, JR3Q_CHNUM );
 
@@ -141,9 +142,10 @@ int main() {
     }
 	
 	printf("save log\n");
-	time_t today = time(NULL);
+	// time_t today = time(NULL);
 	char filename[100];
-	strftime(filename, sizeof(filename), "log/jr3%y%m%d_%H%M%S.log", localtime(&today));
+	// strftime(filename, sizeof(filename), "log/jr3%y%m%d_%H%M%S.log", localtime(&today));
+	sprintf(filename, "log/%sg%smm.log", argv[1], argv[2]);
 	FILE *fp;
 	if ((fp = fopen(filename, "w")) == NULL)
 	  printf("cannot open file\n");
