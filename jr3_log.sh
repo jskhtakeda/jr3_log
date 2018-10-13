@@ -11,10 +11,18 @@ while getopts "f:s:e:" OPTS; do
 		"e")  TEND=`cat "${LOGF}.log" | awk 'NR=='"${MINIDX}"'+'"${OPTARG}"' {print $1}'` ;;
 	esac
 done
-echo -en "\e[34m"; echo $LOGF; echo -en "\e[m"
-echo $LOGF | xsel --clipboard --input
-echo -en "\e[34m"; echo -n "TSTART="; echo $TSTART
-echo -n "TEND="; echo $TEND; echo -en "\e[m"
+# echo -en "\e[34m"; echo $LOGF; echo -en "\e[m"
+# echo $LOGF | xsel --clipboard --input
+# echo -en "\e[34m"; echo -n "TSTART="; echo $TSTART
+# echo -n "TEND="; echo $TEND; echo -en "\e[m"
+
+# echo "set terminal pngcairo enhanced size 2000, 1000"
+# echo "set output 'log/1250g100-600mm.png'"
+# echo "set grid"
+# echo "set xlabel 'Time [msec]'"
+# echo "set ylabel 'Force [N]'"
+echo "set xrange [0:(${TEND}-${TSTART})*1000]"
+echo "plot \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 title \"${LOGF}Fz\", \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 with line linewidth 1 title \"\""
 
 LINEWIDTH=1
 
