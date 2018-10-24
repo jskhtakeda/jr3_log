@@ -16,12 +16,18 @@ done
 # echo -en "\e[34m"; echo -n "TSTART="; echo $TSTART
 # echo -n "TEND="; echo $TEND; echo -en "\e[m"
 
+MASS=`echo "${LOGF}" | sed -e "s@log/\(.*\)g\(.*\)mps@\1@"`
+MASS=`echo "scale=3; ${MASS} / 1000" | bc`
+VEL=`echo "${LOGF}" | sed -e "s@log/\(.*\)g\(.*\)mps@\2@"`
+MOMENT=`echo "scale=4; ${MASS} * ${VEL}" | bc`
+IMPULSE=`cat "${LOGF}.log" | awk -v tstart=${TSTART} -v tend=${TEND} 'BEGIN{I=0;lastt=0;lastv=0;} {if(NR>1 && tstart<lastt && $1<tend){I=I+0.5*($1-lastt)*($10+lastv)}; lastt=$1; lastv=$10} END{print -I}'`
+
 # set grid
 # set xlabel 'Time [msec]'
 # set ylabel 'Force [N]'
 # set key right bottom
 echo "set xrange [0:(${TEND}-${TSTART})*1000]"
-echo "plot \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 title \"${LOGF}Fz\", \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 with line linewidth 1 title \"\""
+echo "plot \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 title \"m=${MASS}, v=${VEL}, mv=${MOMENT}, I=${IMPULSE}\", \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 with line linewidth 1 title \"\""
 
 LINEWIDTH=1
 
@@ -67,6 +73,3 @@ plot\
 unset multiplot
 EOF
 
-echo "${LOGF}" | sed -e "s@log/\(.*\)g\(.*\)mps@\1 \2@" | awk '{print "Input momentum: ", $1*$2/1000, "[N*m/s]"}'
-
-cat "${LOGF}.log" | awk -v tstart=${TSTART} -v tend=${TEND} 'BEGIN{I=0;lastt=0;lastv=0;} {if(NR>1 && tstart<lastt && $1<tend){I=I+0.5*($1-lastt)*($10+lastv)}; lastt=$1; lastv=$10} END{print "Measured Inpulse: ", -I, "[N*m/s]"}'
