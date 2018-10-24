@@ -66,3 +66,7 @@ plot\
 "${LOGF}.log" using (\$1-$TSTART)*1000:13 with line linewidth ${LINEWIDTH} title ""
 unset multiplot
 EOF
+
+echo "${LOGF}" | sed -e "s@log/\(.*\)g\(.*\)mps@\1 \2@" | awk '{print "Input momentum: ", $1*$2/1000, "[N*m/s]"}'
+
+cat "${LOGF}.log" | awk -v tstart=${TSTART} -v tend=${TEND} 'BEGIN{I=0;lastt=0;lastv=0;} {if(NR>1 && tstart<lastt && $1<tend){I=I+0.5*($1-lastt)*($10+lastv)}; lastt=$1; lastv=$10} END{print "Measured Inpulse: ", -I, "[N*m/s]"}'
