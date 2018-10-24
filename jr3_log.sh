@@ -16,11 +16,10 @@ done
 # echo -en "\e[34m"; echo -n "TSTART="; echo $TSTART
 # echo -n "TEND="; echo $TEND; echo -en "\e[m"
 
-# echo "set terminal pngcairo enhanced size 2000, 1000"
-# echo "set output 'log/1250g100-600mm.png'"
-# echo "set grid"
-# echo "set xlabel 'Time [msec]'"
-# echo "set ylabel 'Force [N]'"
+# set grid
+# set xlabel 'Time [msec]'
+# set ylabel 'Force [N]'
+# set key right bottom
 echo "set xrange [0:(${TEND}-${TSTART})*1000]"
 echo "plot \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 title \"${LOGF}Fz\", \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 with line linewidth 1 title \"\""
 

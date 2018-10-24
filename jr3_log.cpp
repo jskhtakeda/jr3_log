@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
 	// time_t today = time(NULL);
 	char filename[100];
 	// strftime(filename, sizeof(filename), "log/jr3%y%m%d_%H%M%S.log", localtime(&today));
-	sprintf(filename, "log/%sg%smm.log", argv[1], argv[2]);
+	sprintf(filename, "log/%sg%smps.log", argv[1], argv[2]);
 	FILE *fp;
 	if ((fp = fopen(filename, "w")) == NULL)
 	  printf("cannot open file\n");
