@@ -21,13 +21,17 @@ MASS=`echo "scale=3; ${MASS} / 1000" | bc`
 VEL=`echo "${LOGF}" | sed -e "s@log/\(.*\)g\(.*\)mps@\2@"`
 MOMENT=`echo "scale=4; ${MASS} * ${VEL}" | bc`
 IMPULSE=`cat "${LOGF}.log" | awk -v tstart=${TSTART} -v tend=${TEND} 'BEGIN{I=0;lastt=0;lastv=0;} {if(NR>1 && tstart<lastt && $1<tend){I=I+0.5*($1-lastt)*($10+lastv)}; lastt=$1; lastv=$10} END{print -I}'`
+MAXF=`cat "${LOGF}.log" | awk 'BEGIN{minf=10000000} {if(minf>$10){minf=$10}} END{print -minf}'`
+MAXF_T=`cat "${LOGF}.log" | awk 'BEGIN{minf=10000000;time=0} {if(minf>$10){minf=$10;time=$1}} END{print -minf}'`
+DT=`echo "scale=4; 2 * ${IMPULSE} / ${MAXF}" | bc`; DT=0${DT}
+SLOPE=`echo "scale=4; 2 * ${MAXF} / ${DT}" | bc`;
 
 # set grid
 # set xlabel 'Time [msec]'
 # set ylabel 'Force [N]'
 # set key right bottom
 echo "set xrange [0:(${TEND}-${TSTART})*1000]"
-echo "plot \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 title \"m=${MASS}, v=${VEL}, mv=${MOMENT}, I=${IMPULSE}\", \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 with line linewidth 1 title \"\""
+echo "plot \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 title \"m=${MASS}, v=${VEL}, mv=${MOMENT}, I=${IMPULSE}\", \"${LOGF}.log\" using (\$1-${TSTART})*1000:10 with line linewidth 1 title \"\", "
 
 LINEWIDTH=1
 
