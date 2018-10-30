@@ -4,9 +4,9 @@ while getopts "f:s:e:" OPTS; do
 	case $OPTS in
 		"f")  LOGF=log/`ls log/ | grep -E "^.*(${OPTARG}).*$" | tail -1`;
 			  LOGF=`echo $LOGF | sed -e "s/^\(.*\)\..*/\1/"`;
-			  TSTART=`cat "${LOGF}.log" | awk 'BEGIN{min=10000} {if(min>$1){min=$1}} END{print min}'`;
-			  TEND=`cat "${LOGF}.log" | awk 'BEGIN{max=-10000} {if(max<$1){max=$1}} END{print max}'`;
-			  MINIDX=`cat "${LOGF}.log" | awk 'BEGIN{min=10000} {if(min>$10){min=$10; minidx=NR}} END{print minidx}'`;;
+			  TSTART=`cat "${LOGF}.log" | awk 'BEGIN{min=10000000} {if(min>$1){min=$1}} END{print min}'`;
+			  TEND=`cat "${LOGF}.log" | awk 'BEGIN{max=-10000000} {if(max<$1){max=$1}} END{print max}'`;
+			  MINIDX=`cat "${LOGF}.log" | awk 'BEGIN{min=10000000} {if(min>$10){min=$10; minidx=NR}} END{print minidx}'`;;
 		"s")  TSTART=`cat "${LOGF}.log" | awk 'NR=='"${MINIDX}"'-'"${OPTARG}"' {print $1}'` ;;
 		"e")  TEND=`cat "${LOGF}.log" | awk 'NR=='"${MINIDX}"'+'"${OPTARG}"' {print $1}'` ;;
 	esac
